@@ -1,1 +1,43 @@
 # spring-docker
+
+Build the Spring boot application to create the Spring boot jar file (Skip Tests is ticked to by pass the test case executions)
+
+Verify the target directory. Our final executable jar name is user-mysql
+
+Creating the Dockerfile to create the docker image
+
+Create the Docker Image using below command from the directory where Dockerfile is placed. This command instruct Docker to create the image of our application and tagged it as user-mysql
+docker build -t user-mysql
+
+Once the image is built, use the following command to view the list of images:
+docker images
+
+Pull MySQL docker image from Docker Hub to local server
+docker pull mysql:5.6
+
+verify the list of images in local server using below command an entry of MySQL will be available
+docker images
+
+run the MySQL server to run as a Docker container
+docker run --name mysql-standalone -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=test -e MYSQL_USER=sa -e MYSQL_PASSWORD=password -d mysql:5.6
+
+Verify the MySQL start up logs using the following command:
+docker container logs mysql-standalone
+
+We can run our Sprint Boot application in the same manner using the following command:
+docker run -d -p 8089:8089 --name user-mysql --link mysql-standalone:mysql user-mysql
+
+Verify the application start up logs using the following command:
+docker container logs user-mysql
+
+efore moving on to test, here are few useful commands to manage the Docker container:
+docker container ls => List the active containers
+docker container stop <container-name> => Stops the container
+docker container rm <container-name> => Remove the stopped container
+
+------------
+Testing the REST API
+
+http://localhost:8089/create
+http://localhost:8089/viewAll
+http://localhost:8089/view/{id}
